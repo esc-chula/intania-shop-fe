@@ -57,7 +57,7 @@ A modern Next.js application built with cutting-edge web technologies for optima
 ## 🗂️ Project Structure
 
 ```
-infinite-gear/
+intania-shop-fe/
 ├── public/                 # Static assets
 ├── src/
 │   ├── app/               # App Router pages and layouts

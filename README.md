@@ -35,7 +35,7 @@ A modern Next.js application built with cutting-edge web technologies for optima
 
    ```bash
    git clone <repository-url>
-   cd infinite-gear
+   cd intania-shop-fe
    ```
 
 2. **Install dependencies**

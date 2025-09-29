@@ -179,10 +179,10 @@ export default function ProductListsPage() {
             <Plus className="h-4 w-4" />
             เพิ่มสินค้า
           </Link>
-          <button className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray-50">
+          {/* <button className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray-50">
             <ShoppingCart className="h-4 w-4" />
             Manual Order
-          </button>
+          </button> */}
         </div>
 
         {/* Products List */}

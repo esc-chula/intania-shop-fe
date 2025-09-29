@@ -60,7 +60,7 @@ export default function ProductCard({
         {/* Product Image and Info */}
         <td className="px-8 py-4">
           <div className="flex items-center gap-4">
-            <div className="h-20 w-16 flex-shrink-0 overflow-hidden rounded-md">
+            <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md">
               <img
                 src={product.image}
                 alt={product.name}

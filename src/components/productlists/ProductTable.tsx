@@ -11,6 +11,8 @@ interface ProductTableProps {
   sortOrder: SortOrder;
   onSort: (field: SortField) => void;
   onPageChange: (page: number) => void;
+  onStockUpdate?: (productId: string, newStock: number) => Promise<void>;
+  onDelete?: (productId: string) => Promise<void>;
   hasResults?: boolean;
 }
 
@@ -22,6 +24,8 @@ export default function ProductTable({
   sortOrder,
   onSort,
   onPageChange,
+  onStockUpdate,
+  onDelete,
   hasResults = true,
 }: ProductTableProps) {
   return (
@@ -72,7 +76,12 @@ export default function ProductTable({
         </thead>
         <tbody>
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard
+              key={product.id}
+              product={product}
+              onStockUpdate={onStockUpdate}
+              onDelete={onDelete}
+            />
           ))}
         </tbody>
       </table>

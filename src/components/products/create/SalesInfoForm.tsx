@@ -164,6 +164,7 @@ const SalesInfoForm = forwardRef<HTMLDivElement, FormSectionProps>(
               onFileSelect={(file) => onFileUpload("sizeChart", file)}
               accept="image/*,.pdf,.doc,.docx"
               required
+              selectedFile={formData.sizeChart}
             />
             {errors?.sizeChart && (
               <p className="mt-1 text-sm text-red-500">{errors.sizeChart}</p>

@@ -18,17 +18,17 @@ export default function ProductTabs({
 }: ProductTabsProps) {
   const tabs = [
     { key: "all" as ProductTab, label: "ทั้งหมด", count: counts.all },
-    { key: "active" as ProductTab, label: "ขายอยู่", count: counts.active },
-    {
-      key: "out_of_stock" as ProductTab,
-      label: "สินค้าหมด",
-      count: counts.out_of_stock,
-    },
-    {
-      key: "inactive" as ProductTab,
-      label: "ยังไม่ขาย",
-      count: counts.inactive,
-    },
+    // { key: "active" as ProductTab, label: "ขายอยู่", count: counts.active },
+    // {
+    //   key: "out_of_stock" as ProductTab,
+    //   label: "สินค้าหมด",
+    //   count: counts.out_of_stock,
+    // },
+    // {
+    //   key: "inactive" as ProductTab,
+    //   label: "ยังไม่ขาย",
+    //   count: counts.inactive,
+    // },
   ];
 
   return (

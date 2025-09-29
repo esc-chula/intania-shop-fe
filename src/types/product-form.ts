@@ -57,6 +57,7 @@ export interface FileUploadButtonProps {
   onFileSelect: (file: File | null) => void;
   accept?: string;
   required?: boolean;
+  selectedFile?: File | null;
 }
 
 export interface FormSectionProps {

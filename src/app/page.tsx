@@ -2,7 +2,10 @@
 
 import { useState, useMemo } from "react";
 import { Plus, ShoppingCart } from "lucide-react";
+import { Toaster } from "react-hot-toast";
 import { useProducts, useFilteredProducts } from "@/hooks/useProducts";
+import { useStockUpdate } from "@/hooks/useStockUpdate";
+import { useProductDelete } from "@/hooks/useProductDelete";
 import {
   type ProductTab,
   type SortField,
@@ -13,6 +16,7 @@ import {
   SearchBar,
   ProductTabs,
 } from "@/components/productlists";
+import Link from "next/link";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -25,6 +29,12 @@ export default function ProductListsPage() {
 
   // Fetch products from Firestore
   const { products, loading, error, refetch } = useProducts();
+
+  // Stock update mutation
+  const stockUpdateMutation = useStockUpdate();
+
+  // Product delete mutation
+  const productDeleteMutation = useProductDelete();
 
   // Filter and sort products
   const { filteredProducts: sortedProducts, tabCounts } = useFilteredProducts(
@@ -61,6 +71,14 @@ export default function ProductListsPage() {
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
+  };
+
+  const handleStockUpdate = async (productId: string, newStock: number) => {
+    await stockUpdateMutation.mutateAsync({ productId, stock: newStock });
+  };
+
+  const handleProductDelete = async (productId: string) => {
+    await productDeleteMutation.mutateAsync({ productId });
   };
 
   const getTabContent = (tab: ProductTab) => {
@@ -102,10 +120,10 @@ export default function ProductListsPage() {
           </div>
           <div className="flex items-center justify-center p-8">
             <div className="text-center">
-              <div className="text-red-500 mb-2">{error}</div>
+              <div className="mb-2 text-red-500">{error}</div>
               <button
                 onClick={() => void refetch()}
-                className="px-4 py-2 bg-[#892328] text-white rounded-lg hover:bg-[#7a1f24]"
+                className="rounded-lg bg-[#892328] px-4 py-2 text-white hover:bg-[#7a1f24]"
               >
                 ลองใหม่
               </button>
@@ -118,12 +136,18 @@ export default function ProductListsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          className: "text-sm",
+          duration: 4000,
+        }}
+      />
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900">สินค้า</h1>
         </div>
-
 
         {/* Tabs */}
         <div className="mb-6">
@@ -148,14 +172,17 @@ export default function ProductListsPage() {
             onChange={handleSearchChange}
             placeholder="ชื่อสินค้า, รหัส SKU, รหัสสินค้า"
           />
-          <button className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray-50">
+          <Link
+            href="/products/create"
+            className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray-50"
+          >
             <Plus className="h-4 w-4" />
             เพิ่มสินค้า
-          </button>
-          <button className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray-50">
+          </Link>
+          {/* <button className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray-50">
             <ShoppingCart className="h-4 w-4" />
             Manual Order
-          </button>
+          </button> */}
         </div>
 
         {/* Products List */}
@@ -168,6 +195,8 @@ export default function ProductListsPage() {
             sortOrder={sortOrder}
             onSort={handleSort}
             onPageChange={setCurrentPage}
+            onStockUpdate={handleStockUpdate}
+            onDelete={handleProductDelete}
             hasResults={sortedProducts.length > 0}
           />
         )}

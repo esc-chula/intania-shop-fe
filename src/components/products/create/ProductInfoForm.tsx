@@ -46,6 +46,7 @@ const ProductInfoForm = forwardRef<HTMLDivElement, FormSectionProps>(
                 onFileSelect={(file) => onFileUpload("image", file)}
                 accept="image/*"
                 required
+                selectedFile={formData.image}
               />
               {errors?.image && (
                 <p className="mt-1 text-sm text-red-500">{errors.image}</p>
@@ -58,6 +59,7 @@ const ProductInfoForm = forwardRef<HTMLDivElement, FormSectionProps>(
                 onFileSelect={(file) => onFileUpload("profileImage", file)}
                 accept="image/*"
                 required
+                selectedFile={formData.profileImage}
               />
               {errors?.profileImage && (
                 <p className="mt-1 text-sm text-red-500">
@@ -71,6 +73,7 @@ const ProductInfoForm = forwardRef<HTMLDivElement, FormSectionProps>(
                 icon={Video}
                 onFileSelect={(file) => onFileUpload("video", file)}
                 accept="video/*"
+                selectedFile={formData.video}
               />
               {errors?.video && (
                 <p className="mt-1 text-sm text-red-500">{errors.video}</p>

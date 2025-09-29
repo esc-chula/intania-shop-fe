@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { type Product } from "@/types/product";
+import { type Product, ProductStatus } from "@/types/product";
 
 interface ProductCardProps {
   product: Product;
@@ -8,11 +8,11 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const getStatusText = (status: Product["status"]) => {
     switch (status) {
-      case "active":
+      case ProductStatus.ACTIVE:
         return "แก้ไข/ดูเพิ่มเติม";
-      case "out_of_stock":
+      case ProductStatus.OUT_OF_STOCK:
         return "แก้ไข/ดูเพิ่มเติม";
-      case "inactive":
+      case ProductStatus.INACTIVE:
         return "แก้ไข/ดูเพิ่มเติม";
       default:
         return "แก้ไข/ดูเพิ่มเติม";

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/firebase";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { doc, updateDoc, getDoc, deleteDoc } from "firebase/firestore";
 
 export async function PATCH(
   request: NextRequest,
@@ -57,6 +57,49 @@ export async function PATCH(
           error instanceof Error
             ? error.message
             : "เกิดข้อผิดพลาดในการอัปเดตจำนวนสินค้า",
+      },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } },
+) {
+  try {
+    const { id } = params;
+
+    const productRef = doc(db, "products", id);
+
+    // Check if product exists
+    const productSnap = await getDoc(productRef);
+    if (!productSnap.exists()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "ไม่พบสินค้าที่ต้องการลบ",
+        },
+        { status: 404 },
+      );
+    }
+
+    // Delete the product
+    await deleteDoc(productRef);
+
+    return NextResponse.json({
+      success: true,
+      message: "ลบสินค้าสำเร็จ",
+    });
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "เกิดข้อผิดพลาดในการลบสินค้า",
       },
       { status: 500 },
     );

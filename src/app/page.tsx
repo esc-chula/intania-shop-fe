@@ -5,6 +5,7 @@ import { Plus, ShoppingCart } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 import { useProducts, useFilteredProducts } from "@/hooks/useProducts";
 import { useStockUpdate } from "@/hooks/useStockUpdate";
+import { useProductDelete } from "@/hooks/useProductDelete";
 import {
   type ProductTab,
   type SortField,
@@ -30,6 +31,9 @@ export default function ProductListsPage() {
 
   // Stock update mutation
   const stockUpdateMutation = useStockUpdate();
+
+  // Product delete mutation
+  const productDeleteMutation = useProductDelete();
 
   // Filter and sort products
   const { filteredProducts: sortedProducts, tabCounts } = useFilteredProducts(
@@ -70,6 +74,10 @@ export default function ProductListsPage() {
 
   const handleStockUpdate = async (productId: string, newStock: number) => {
     await stockUpdateMutation.mutateAsync({ productId, stock: newStock });
+  };
+
+  const handleProductDelete = async (productId: string) => {
+    await productDeleteMutation.mutateAsync({ productId });
   };
 
   const getTabContent = (tab: ProductTab) => {
@@ -184,6 +192,7 @@ export default function ProductListsPage() {
             onSort={handleSort}
             onPageChange={setCurrentPage}
             onStockUpdate={handleStockUpdate}
+            onDelete={handleProductDelete}
             hasResults={sortedProducts.length > 0}
           />
         )}

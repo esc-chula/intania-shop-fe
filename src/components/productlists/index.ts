@@ -5,3 +5,4 @@ export { default as ProductTabs } from "./ProductTabs";
 export { default as SortButton } from "./SortButton";
 export { default as Pagination } from "./Pagination";
 export { default as StockUpdateModal } from "./StockUpdateModal";
+export { default as DeleteConfirmationModal } from "./DeleteConfirmationModal";

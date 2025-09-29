@@ -3,3 +3,6 @@ export { default as FormTabs } from "./FormTabs";
 export { default as ProductInfoForm } from "./ProductInfoForm";
 export { default as SalesInfoForm } from "./SalesInfoForm";
 export { default as ShippingForm } from "./ShippingForm";
+export { default as VariantSection } from "./VariantSection";
+export { default as VariantTable } from "./VariantTable";
+export { default as VariantTableRow } from "./VariantTableRow";

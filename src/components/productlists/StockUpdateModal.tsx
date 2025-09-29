@@ -7,7 +7,7 @@ interface StockUpdateModalProps {
   product: Product;
   isOpen: boolean;
   onClose: () => void;
-  onUpdate: (productId: string, newStock: number) => void;
+  onUpdate: (productId: string, newStock: number) => Promise<void>;
 }
 
 export default function StockUpdateModal({
@@ -43,7 +43,7 @@ export default function StockUpdateModal({
         handleClose();
       } else if (e.key === "Enter" && e.ctrlKey) {
         e.preventDefault();
-        handleSubmit(e as any);
+        void handleSubmitKeyboard();
       }
     };
 
@@ -53,6 +53,33 @@ export default function StockUpdateModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    // Validation
+    if (stock < 0) {
+      setError("จำนวนสินค้าต้องไม่น้อยกว่า 0");
+      return;
+    }
+
+    if (stock === product.stock) {
+      setError("จำนวนสินค้าไม่เปลี่ยนแปลง");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      await onUpdate(product.id, stock);
+      onClose();
+    } catch (error) {
+      console.error("Error updating stock:", error);
+      setError("เกิดข้อผิดพลาดในการอัปเดต กรุณาลองใหม่อีกครั้ง");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmitKeyboard = async () => {
     setError(null);
 
     // Validation

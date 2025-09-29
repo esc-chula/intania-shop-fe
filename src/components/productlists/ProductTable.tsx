@@ -11,8 +11,8 @@ interface ProductTableProps {
   sortOrder: SortOrder;
   onSort: (field: SortField) => void;
   onPageChange: (page: number) => void;
-  onStockUpdate?: (productId: string, newStock: number) => void;
-  onDelete?: (productId: string) => void;
+  onStockUpdate?: (productId: string, newStock: number) => Promise<void>;
+  onDelete?: (productId: string) => Promise<void>;
   hasResults?: boolean;
 }
 

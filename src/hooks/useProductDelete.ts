@@ -28,7 +28,7 @@ export function useProductDelete() {
     mutationFn: deleteProduct,
     onSuccess: (data) => {
       if (data.success) {
-        toast.success(`${data.message || "ลบสินค้าสำเร็จ"} 🗑️`, {
+        toast.success(`${data.message ?? "ลบสินค้าสำเร็จ"} 🗑️`, {
           duration: 4000,
           style: {
             background: "#EF4444",
@@ -36,15 +36,15 @@ export function useProductDelete() {
           },
         });
         // Invalidate products query to refetch updated data
-        queryClient.invalidateQueries({ queryKey: ["products"] });
+        void queryClient.invalidateQueries({ queryKey: ["products"] });
       } else {
-        toast.error(data.error || "เกิดข้อผิดพลาดในการลบสินค้า", {
+        toast.error(data.error ?? "เกิดข้อผิดพลาดในการลบสินค้า", {
           duration: 5000,
         });
       }
     },
     onError: (error: Error) => {
-      toast.error(error.message || "เกิดข้อผิดพลาดในการลบสินค้า", {
+      toast.error(error.message ?? "เกิดข้อผิดพลาดในการลบสินค้า", {
         duration: 5000,
         style: {
           background: "#EF4444",

@@ -44,15 +44,15 @@ export function useStockUpdate() {
           },
         );
         // Invalidate products query to refetch updated data
-        queryClient.invalidateQueries({ queryKey: ["products"] });
+        void queryClient.invalidateQueries({ queryKey: ["products"] });
       } else {
-        toast.error(data.error || "เกิดข้อผิดพลาดในการอัปเดต", {
+        toast.error(data.error ?? "เกิดข้อผิดพลาดในการอัปเดต", {
           duration: 5000,
         });
       }
     },
     onError: (error: Error) => {
-      toast.error(error.message || "เกิดข้อผิดพลาดในการอัปเดตจำนวนสินค้า", {
+      toast.error(error.message ?? "เกิดข้อผิดพลาดในการอัปเดตจำนวนสินค้า", {
         duration: 5000,
         style: {
           background: "#EF4444",

@@ -7,8 +7,8 @@ import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 interface ProductCardProps {
   product: Product;
-  onStockUpdate?: (productId: string, newStock: number) => void;
-  onDelete?: (productId: string) => void;
+  onStockUpdate?: (productId: string, newStock: number) => Promise<void>;
+  onDelete?: (productId: string) => Promise<void>;
 }
 
 export default function ProductCard({

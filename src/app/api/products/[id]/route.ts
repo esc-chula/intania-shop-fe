@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/firebase";
 import { doc, updateDoc, getDoc, deleteDoc } from "firebase/firestore";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const { id } = params;
-    const body = await request.json();
+    const { id } = await params;
+    const body = (await request.json()) as { stock: number };
     const { stock } = body;
 
     if (typeof stock !== "number" || stock < 0) {
@@ -65,10 +65,10 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const productRef = doc(db, "products", id);
 

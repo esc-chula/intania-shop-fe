@@ -1,4 +1,4 @@
-import { type Product } from "@/types/product";
+import { ProductStatus, type Product } from "@/types/product";
 
 export const mockProducts: Product[] = [
   {
@@ -17,7 +17,7 @@ export const mockProducts: Product[] = [
       selfPickup: true,
       homeDelivery: false,
     },
-    status: "active",
+    status: ProductStatus.ACTIVE,
     createdAt: "09/09/2569 12:00",
     updatedAt: "09/09/2569 12:00",
   },
@@ -37,7 +37,7 @@ export const mockProducts: Product[] = [
       selfPickup: false,
       homeDelivery: true,
     },
-    status: "active",
+    status: ProductStatus.ACTIVE,
     createdAt: "08/09/2569 14:30",
     updatedAt: "08/09/2569 14:30",
   },
@@ -57,7 +57,7 @@ export const mockProducts: Product[] = [
       selfPickup: true,
       homeDelivery: true,
     },
-    status: "out_of_stock",
+    status: ProductStatus.OUT_OF_STOCK,
     createdAt: "07/09/2569 09:15",
     updatedAt: "07/09/2569 09:15",
   },
@@ -77,7 +77,7 @@ export const mockProducts: Product[] = [
       selfPickup: true,
       homeDelivery: false,
     },
-    status: "active",
+    status: ProductStatus.ACTIVE,
     createdAt: "06/09/2569 16:45",
     updatedAt: "06/09/2569 16:45",
   },
@@ -97,7 +97,7 @@ export const mockProducts: Product[] = [
       selfPickup: false,
       homeDelivery: false,
     },
-    status: "inactive",
+    status: ProductStatus.INACTIVE,
     createdAt: "05/09/2569 11:20",
     updatedAt: "05/09/2569 11:20",
   },
@@ -117,7 +117,7 @@ export const mockProducts: Product[] = [
       selfPickup: true,
       homeDelivery: true,
     },
-    status: "active",
+    status: ProductStatus.ACTIVE,
     createdAt: "04/09/2569 13:10",
     updatedAt: "04/09/2569 13:10",
   },
@@ -137,7 +137,7 @@ export const mockProducts: Product[] = [
       selfPickup: true,
       homeDelivery: true,
     },
-    status: "active",
+    status: ProductStatus.ACTIVE,
     createdAt: "03/09/2569 08:30",
     updatedAt: "03/09/2569 08:30",
   },

@@ -1,4 +1,6 @@
 import "@/styles/globals.css";
+import { QueryProvider } from "@/lib/query-client";
+import { Toaster } from "react-hot-toast";
 
 import { type Metadata } from "next";
 
@@ -13,7 +15,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className="noto-sans-thai">
-      <body>{children}</body>
+      <body>
+        <QueryProvider>
+          {children}
+          <Toaster position="top-right" />
+        </QueryProvider>
+      </body>
     </html>
   );
 }

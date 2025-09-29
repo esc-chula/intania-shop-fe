@@ -1,6 +1,8 @@
-import { useState } from "react";
 import toast from "react-hot-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiFormData } from "@/lib/axios";
 import { type ProductFormData, type FormErrors } from "@/types/product-form";
+import { ProductQueryKeys } from "./useProducts";
 
 interface UseProductSubmissionProps {
   formData: Partial<ProductFormData>;
@@ -8,74 +10,46 @@ interface UseProductSubmissionProps {
   resetForm: () => void;
 }
 
+interface CreateProductResponse {
+  success: boolean;
+  error?: string;
+}
+
+const createProduct = async (
+  formData: FormData,
+): Promise<CreateProductResponse> => {
+  await apiFormData.post<CreateProductResponse, FormData>(
+    "/products",
+    formData,
+  );
+
+  return { success: true };
+};
+
 export function useProductSubmission({
   formData,
   validateForm,
   resetForm,
 }: UseProductSubmissionProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
 
-  const createProduct = async (): Promise<boolean> => {
-    try {
-      // Create FormData for file uploads
-      const submitData = new FormData();
-
-      // Add text fields
-      submitData.append("name", formData.name ?? "");
-      submitData.append("description", formData.description ?? "");
-      submitData.append("productType", formData.productType ?? "single");
-      submitData.append("price", (formData.price ?? 0).toString());
-      submitData.append("stock", (formData.stock ?? 0).toString());
-      submitData.append("minOrder", (formData.minOrder ?? 1).toString());
-      submitData.append("pickupLocation", formData.pickupLocation ?? "");
-      submitData.append("shippingFee", formData.shippingFee ?? "");
-      submitData.append(
-        "pickupMethods",
-        JSON.stringify(
-          formData.pickupMethods ?? { selfPickup: false, homeDelivery: false },
-        ),
-      );
-
-      // Add files
-      if (formData.image) {
-        submitData.append("image", formData.image);
-      }
-      if (formData.profileImage) {
-        submitData.append("profileImage", formData.profileImage);
-      }
-      if (formData.video) {
-        submitData.append("video", formData.video);
-      }
-      if (formData.sizeChart) {
-        submitData.append("sizeChart", formData.sizeChart);
-      }
-
-      const response = await fetch("/api/products", {
-        method: "POST",
-        body: submitData,
-      });
-
-      if (!response.ok) {
-        const errorData = (await response.json().catch(() => ({}))) as {
-          message?: string;
-        };
-        throw new Error(errorData.message ?? "เกิดข้อผิดพลาดในการสร้างสินค้า");
-      }
-
-      return true;
-    } catch (error) {
-      console.error("Product creation error:", error);
-      throw error;
-    }
-  };
+  const mutation = useMutation({
+    mutationFn: createProduct,
+    onSuccess: async () => {
+      toast.success("สร้างสินค้าสำเร็จ!");
+      resetForm();
+      await queryClient.invalidateQueries({ queryKey: [ProductQueryKeys] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message ?? "เกิดข้อผิดพลาดในการสร้างสินค้า");
+    },
+  });
 
   const handleSubmit = async () => {
-    if (isSubmitting) return;
+    if (mutation.isPending) return;
 
-    // Validate form
     const validation = validateForm();
     if (!validation.isValid) {
-      // Show first error as toast
       const firstError = Object.values(validation.errors)[0];
       if (firstError) {
         toast.error(firstError);
@@ -83,23 +57,38 @@ export function useProductSubmission({
       return;
     }
 
-    setIsSubmitting(true);
+    const form = new FormData();
 
-    try {
-      await createProduct();
-      toast.success("สร้างสินค้าสำเร็จ!");
-      resetForm();
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการเชื่อมต่อ";
-      toast.error(errorMessage);
-    } finally {
-      setIsSubmitting(false);
-    }
+    form.append("name", formData.name ?? "");
+    form.append("description", formData.description ?? "");
+    form.append("productType", formData.productType ?? "single");
+    form.append("price", String(formData.price ?? 0));
+    form.append("stock", String(formData.stock ?? 0));
+    form.append("minOrder", String(formData.minOrder ?? 1));
+    form.append(
+      "selfPickup",
+      String(formData.pickupMethods?.selfPickup ?? false),
+    );
+    form.append(
+      "homeDelivery",
+      String(formData.pickupMethods?.homeDelivery ?? false),
+    );
+
+    if (formData.pickupLocation)
+      form.append("pickupLocation", formData.pickupLocation);
+    if (formData.shippingFee) form.append("shippingFee", formData.shippingFee);
+
+    if (formData.image) form.append("image", formData.image);
+    if (formData.profileImage)
+      form.append("profileImage", formData.profileImage);
+    if (formData.video) form.append("video", formData.video);
+    if (formData.sizeChart) form.append("sizeChart", formData.sizeChart);
+
+    mutation.mutate(form);
   };
 
   return {
-    isSubmitting,
+    isSubmitting: mutation.isPending,
     handleSubmit,
   };
 }

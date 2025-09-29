@@ -1,5 +1,6 @@
 import toast from "react-hot-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { apiFormData } from "@/lib/axios";
 import { type ProductFormData, type FormErrors } from "@/types/product-form";
 import { ProductQueryKeys } from "./useProducts";
@@ -32,6 +33,7 @@ export function useProductSubmission({
   resetForm,
 }: UseProductSubmissionProps) {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const mutation = useMutation({
     mutationFn: createProduct,
@@ -39,6 +41,7 @@ export function useProductSubmission({
       toast.success("สร้างสินค้าสำเร็จ!");
       resetForm();
       await queryClient.invalidateQueries({ queryKey: [ProductQueryKeys] });
+      router.push("/");
     },
     onError: (error: Error) => {
       toast.error(error.message ?? "เกิดข้อผิดพลาดในการสร้างสินค้า");
@@ -83,6 +86,18 @@ export function useProductSubmission({
       form.append("profileImage", formData.profileImage);
     if (formData.video) form.append("video", formData.video);
     if (formData.sizeChart) form.append("sizeChart", formData.sizeChart);
+
+    if (formData.productType === "multiple") {
+      if (formData.variantGroups) {
+        form.append("variantGroups", JSON.stringify(formData.variantGroups));
+      }
+      if (formData.variantCombinations) {
+        form.append(
+          "variantCombinations",
+          JSON.stringify(formData.variantCombinations),
+        );
+      }
+    }
 
     mutation.mutate(form);
   };

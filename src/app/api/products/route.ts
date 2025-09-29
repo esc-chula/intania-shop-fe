@@ -8,6 +8,32 @@ import {
   query,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { type VariantGroup, type VariantCombination } from "@/types/product";
+
+interface ProductDataToSave {
+  name: string;
+  description: string;
+  productType: string;
+  price: number;
+  stock: number;
+  minOrder: number;
+  pickupMethods: {
+    selfPickup: boolean;
+    homeDelivery: boolean;
+  };
+  status: string;
+  sales: number;
+  createdAt: string;
+  updatedAt: string;
+  pickupLocation?: string;
+  shippingFee?: string;
+  image?: string;
+  profileImage?: string;
+  video?: string;
+  sizeChart?: string;
+  variantGroups?: VariantGroup[];
+  variantCombinations?: VariantCombination[];
+}
 
 export async function GET() {
   try {
@@ -96,19 +122,87 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const productData = {
+    let variantGroups: VariantGroup[] | null = null;
+    let variantCombinations: VariantCombination[] | null = null;
+    let calculatedPrice: number;
+    let calculatedStock: number;
+
+    // Parse variant data
+    const variantGroupsData = formData.get("variantGroups");
+    if (variantGroupsData) {
+      try {
+        variantGroups = JSON.parse(
+          variantGroupsData as string,
+        ) as VariantGroup[];
+      } catch (error) {
+        console.warn("Failed to parse variant groups data:", error);
+      }
+    }
+
+    const variantCombinationsData = formData.get("variantCombinations");
+    if (variantCombinationsData) {
+      try {
+        variantCombinations = JSON.parse(
+          variantCombinationsData as string,
+        ) as VariantCombination[];
+      } catch (error) {
+        console.warn("Failed to parse variant combinations data:", error);
+      }
+    }
+
+    // Calculate price and stock based on product type
+    if (productType === "multiple") {
+      // For multiple variants, validate that we have combinations
+      if (!variantCombinations || variantCombinations.length === 0) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Multiple product type requires variant combinations",
+          },
+          { status: 400 }
+        );
+      }
+
+      // Calculate from variant combinations
+      calculatedPrice = Math.min(
+        ...variantCombinations.map((combo) => combo.price),
+      );
+      calculatedStock = variantCombinations.reduce(
+        (total, combo) => total + combo.stock,
+        0,
+      );
+    } else {
+      // For single products, use form values
+      calculatedPrice = price;
+      calculatedStock = stock;
+    }
+
+    const productData: ProductDataToSave = {
       name,
       description,
       productType,
-      price,
-      stock,
+      price: calculatedPrice,
+      stock: calculatedStock,
       minOrder,
       pickupMethods,
-      status: stock > 0 ? "active" : "out_of_stock",
+      status: calculatedStock > 0 ? "active" : "out_of_stock",
       sales: 0,
       createdAt: timestamp,
       updatedAt: timestamp,
     };
+
+    if (pickupLocation) productData.pickupLocation = pickupLocation;
+    if (shippingFee) productData.shippingFee = shippingFee;
+    if (imageUrl) productData.image = imageUrl;
+    if (profileImageUrl) productData.profileImage = profileImageUrl;
+    if (videoUrl) productData.video = videoUrl;
+    if (sizeChartUrl) productData.sizeChart = sizeChartUrl;
+
+    if (productType === "multiple") {
+      if (variantGroups) productData.variantGroups = variantGroups;
+      if (variantCombinations)
+        productData.variantCombinations = variantCombinations;
+    }
 
     await addDoc(collection(db, "products"), productData);
 

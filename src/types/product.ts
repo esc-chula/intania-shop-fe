@@ -1,3 +1,23 @@
+// Variant types for multiple product options
+export interface VariantOption {
+  id: string;
+  name: string;
+}
+
+export interface VariantGroup {
+  id: string;
+  name: string;
+  options: VariantOption[];
+}
+
+export interface VariantCombination {
+  id: string;
+  combination: Record<string, string>;
+  price: number;
+  stock: number;
+  sku?: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -22,6 +42,9 @@ export interface Product {
   status: ProductStatus;
   createdAt: string;
   updatedAt: string;
+  // Variant data (only for multiple type)
+  variantGroups?: VariantGroup[];
+  variantCombinations?: VariantCombination[];
 }
 
 export enum ProductStatus {

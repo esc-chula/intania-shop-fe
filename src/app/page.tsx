@@ -16,6 +16,7 @@ import {
   SearchBar,
   ProductTabs,
 } from "@/components/productlists";
+import Link from "next/link";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -171,10 +172,13 @@ export default function ProductListsPage() {
             onChange={handleSearchChange}
             placeholder="ชื่อสินค้า, รหัส SKU, รหัสสินค้า"
           />
-          <button className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray-50">
+          <Link
+            href="/products/create"
+            className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray-50"
+          >
             <Plus className="h-4 w-4" />
             เพิ่มสินค้า
-          </button>
+          </Link>
           <button className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray-50">
             <ShoppingCart className="h-4 w-4" />
             Manual Order

@@ -25,6 +25,13 @@ export default function CreateProductPage() {
     handleCheckboxChange,
     validateForm,
     resetForm,
+    handleAddVariantGroup,
+    handleRemoveVariantGroup,
+    handleUpdateVariantGroup,
+    handleAddVariantOption,
+    handleRemoveVariantOption,
+    handleUpdateVariantOption,
+    handleUpdateVariantCombination,
   } = useProductForm();
 
   const { isSubmitting, handleSubmit } = useProductSubmission({
@@ -68,6 +75,13 @@ export default function CreateProductPage() {
             errors={errors}
             onInputChange={handleInputChange}
             onFileUpload={handleFileUpload}
+            onAddVariantGroup={handleAddVariantGroup}
+            onRemoveVariantGroup={handleRemoveVariantGroup}
+            onUpdateVariantGroup={handleUpdateVariantGroup}
+            onAddVariantOption={handleAddVariantOption}
+            onRemoveVariantOption={handleRemoveVariantOption}
+            onUpdateVariantOption={handleUpdateVariantOption}
+            onUpdateVariantCombination={handleUpdateVariantCombination}
           />
 
           {/* Shipping Section */}

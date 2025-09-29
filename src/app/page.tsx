@@ -2,7 +2,9 @@
 
 import { useState, useMemo } from "react";
 import { Plus, ShoppingCart } from "lucide-react";
+import { Toaster } from "react-hot-toast";
 import { useProducts, useFilteredProducts } from "@/hooks/useProducts";
+import { useStockUpdate } from "@/hooks/useStockUpdate";
 import {
   type ProductTab,
   type SortField,
@@ -25,6 +27,9 @@ export default function ProductListsPage() {
 
   // Fetch products from Firestore
   const { products, loading, error, refetch } = useProducts();
+
+  // Stock update mutation
+  const stockUpdateMutation = useStockUpdate();
 
   // Filter and sort products
   const { filteredProducts: sortedProducts, tabCounts } = useFilteredProducts(
@@ -61,6 +66,10 @@ export default function ProductListsPage() {
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
+  };
+
+  const handleStockUpdate = async (productId: string, newStock: number) => {
+    await stockUpdateMutation.mutateAsync({ productId, stock: newStock });
   };
 
   const getTabContent = (tab: ProductTab) => {
@@ -102,10 +111,10 @@ export default function ProductListsPage() {
           </div>
           <div className="flex items-center justify-center p-8">
             <div className="text-center">
-              <div className="text-red-500 mb-2">{error}</div>
+              <div className="mb-2 text-red-500">{error}</div>
               <button
                 onClick={() => void refetch()}
-                className="px-4 py-2 bg-[#892328] text-white rounded-lg hover:bg-[#7a1f24]"
+                className="rounded-lg bg-[#892328] px-4 py-2 text-white hover:bg-[#7a1f24]"
               >
                 ลองใหม่
               </button>
@@ -118,12 +127,18 @@ export default function ProductListsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          className: "text-sm",
+          duration: 4000,
+        }}
+      />
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900">สินค้า</h1>
         </div>
-
 
         {/* Tabs */}
         <div className="mb-6">
@@ -168,6 +183,7 @@ export default function ProductListsPage() {
             sortOrder={sortOrder}
             onSort={handleSort}
             onPageChange={setCurrentPage}
+            onStockUpdate={handleStockUpdate}
             hasResults={sortedProducts.length > 0}
           />
         )}

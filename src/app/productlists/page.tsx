@@ -4,7 +4,6 @@ import { useState, useMemo } from "react";
 import { Plus, ShoppingCart } from "lucide-react";
 import { mockProducts } from "@/data/mockProducts";
 import {
-  type Product,
   type ProductTab,
   type SortField,
   type SortOrder,
@@ -52,8 +51,8 @@ export default function ProductListsPage() {
     if (!sortField) return filteredProducts;
 
     return [...filteredProducts].sort((a, b) => {
-      let aValue = a[sortField];
-      let bValue = b[sortField];
+      const aValue = a[sortField];
+      const bValue = b[sortField];
 
       if (sortOrder === "asc") {
         return aValue > bValue ? 1 : -1;
